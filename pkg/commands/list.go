@@ -10,11 +10,14 @@ import (
 
 // ListInstalled Lists all installed Go versions.
 func ListInstalled() {
-	fmt.Println("Installed Go versions:")
-
 	// Get GVM root directory.
 	gvmRoot := config.GetGvmRoot()
 	versionsDir := filepath.Join(gvmRoot, "versions")
+
+	if err := os.MkdirAll(versionsDir, 0755); err != nil {
+		fmt.Printf("Create versions directory failed: %v\n", err)
+		return
+	}
 
 	// Read versions directory.
 	dirs, err := os.ReadDir(versionsDir)
@@ -24,6 +27,10 @@ func ListInstalled() {
 		} else {
 			fmt.Printf("Failed to read versions directory: %v\n", err)
 		}
+		return
+	}
+	if len(dirs) == 0 {
+		fmt.Println("  No Go versions installed yet.")
 		return
 	}
 
@@ -40,6 +47,8 @@ func ListInstalled() {
 
 	// Show current version.
 	currentVersion := GetCurrentVersion()
+
+	fmt.Println("Installed Go versions:")
 
 	// Output version list.
 	for _, version := range versions {

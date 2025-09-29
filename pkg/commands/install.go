@@ -20,11 +20,13 @@ func Install(version string) {
 	// Get the installation directory.
 	gvmRoot := config.GetGvmRoot()
 	goVersionDir := filepath.Join(gvmRoot, "versions", version)
-	zipFile := filepath.Join(goVersionDir, fmt.Sprintf("go-%s-%s-%s.zip", version, osType, arch))
+	goArchivesDir := filepath.Join(gvmRoot, "archives")
+	goCurrentDir := filepath.Join(gvmRoot, "current")
+	zipFile := filepath.Join(goArchivesDir, fmt.Sprintf("go-%s-%s-%s.zip", version, osType, arch))
 	isDownload := false
 
-	if err := os.MkdirAll(goVersionDir, 0755); err != nil {
-		fmt.Printf("Create version directory failed: %v\n", err)
+	if err := os.MkdirAll(goArchivesDir, 0755); err != nil {
+		fmt.Printf("Create archives directory failed: %v\n", err)
 		return
 	}
 
@@ -57,11 +59,13 @@ func Install(version string) {
 		return
 	}
 
-	// Move the files to the installation directory.
-	goDir := filepath.Join(gvmRoot, "go")
-	os.RemoveAll(goDir)
-	if err := utils.CopyDirectory(goVersionDir, goDir); err != nil {
-		fmt.Printf("Install failed: %v\n", err)
+	// Create current symlink.
+	if err := os.RemoveAll(goCurrentDir); err != nil {
+		fmt.Printf("Remove current symlink failed: %v\n", err)
+		return
+	}
+	if err := os.Symlink(goVersionDir, goCurrentDir); err != nil {
+		fmt.Printf("Create current symlink failed: %v\n", err)
 		return
 	}
 
@@ -70,7 +74,7 @@ func Install(version string) {
 
 // buildDownloadURL Builds download url
 func buildDownloadURL(version, osType, arch string) string {
-	baseURL := "https://golang.org/dl/go%s.%s-%s.%s"
+	baseURL := "https://dl.google.com/go/go%s.%s-%s.%s"
 
 	var osSuffix, archSuffix, extension string
 
