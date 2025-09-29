@@ -13,6 +13,9 @@ GVM is a tool for managing multiple Go versions. It supports Windows, Linux, and
 
 Download the appropriate gvm executable for your system and place it in your environment's PATH.
 
+
+## Usage
+
 ```bash
 # Install a specific Go version
 gvm install 1.24.0
