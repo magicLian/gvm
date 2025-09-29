@@ -1,0 +1,32 @@
+project_name: gvm
+version: 2
+
+builds:
+  - main: ./main.go
+    goos: 
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+      - 386
+    ldflags:
+      - -s -w
+
+release:
+  github:
+    owner: magicLian        
+    name: gvm           
+  draft: false
+  prerelease: false
+
+archives:
+  - format: tar.gz
+    name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: "checksums.txt"

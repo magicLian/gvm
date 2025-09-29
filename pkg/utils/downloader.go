@@ -11,34 +11,28 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
-// DownloadFile 下载文件并显示进度条
-func DownloadFile(url, destPath string) error {
-	// 确保目标目录存在
+// DownloadFile Download file from url to destPath with progress bar
+func DownloadFile(fileUrl, destPath string) error {
+	// Ensure the directory exists
 	if err := os.MkdirAll(filepath.Dir(destPath), 0755); err != nil {
 		return fmt.Errorf("create directory failed: %v", err)
 	}
 
-	// 创建文件
-	out, err := os.Create(destPath)
-	if err != nil {
-		return fmt.Errorf("create file failed: %v", err)
+	client := &http.Client{
+		Timeout:   60 * time.Second,
 	}
-	defer out.Close()
-
-	// 创建带超时的 HTTP 客户端
-	client := &http.Client{Timeout: 120 * time.Second}
-	resp, err := client.Get(url)
+	resp, err := client.Get(fileUrl)
 	if err != nil {
 		return fmt.Errorf("send HTTP request failed: %v", err)
 	}
 	defer resp.Body.Close()
 
-	// 检查状态码
+	// Check status code
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("download failed: status code %d", resp.StatusCode)
 	}
 
-	// 创建进度条
+	// Create progress bar
 	bar := progressbar.NewOptions64(
 		resp.ContentLength,
 		progressbar.OptionSetDescription("Downloading..."),
@@ -53,7 +47,14 @@ func DownloadFile(url, destPath string) error {
 		}),
 	)
 
-	// 写入文件 + 更新进度
+	// Create file
+	out, err := os.Create(destPath)
+	if err != nil {
+		return fmt.Errorf("create file failed: %v", err)
+	}
+	defer out.Close()
+
+	// Write response content to file + update progress bar
 	_, err = io.Copy(io.MultiWriter(out, bar), resp.Body)
 	if err != nil {
 		return fmt.Errorf("write response content failed: %v", err)

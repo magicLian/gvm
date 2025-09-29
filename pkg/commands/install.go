@@ -22,7 +22,7 @@ func Install(version string) {
 	goVersionDir := filepath.Join(gvmRoot, "versions", version)
 	goArchivesDir := filepath.Join(gvmRoot, "archives")
 	goCurrentDir := filepath.Join(gvmRoot, "current")
-	zipFile := filepath.Join(goArchivesDir, fmt.Sprintf("go-%s-%s-%s.zip", version, osType, arch))
+	zipFile := filepath.Join(goArchivesDir, buildDownloadFileName(version, osType, arch))
 	isDownload := false
 
 	if err := os.MkdirAll(goArchivesDir, 0755); err != nil {
@@ -64,7 +64,8 @@ func Install(version string) {
 		fmt.Printf("Remove current symlink failed: %v\n", err)
 		return
 	}
-	if err := os.Symlink(goVersionDir, goCurrentDir); err != nil {
+	goVersionBinDir := filepath.Join(goVersionDir, "go", "bin")
+	if err := os.Symlink(goVersionBinDir, goCurrentDir); err != nil {
 		fmt.Printf("Create current symlink failed: %v\n", err)
 		return
 	}
@@ -72,10 +73,8 @@ func Install(version string) {
 	fmt.Printf("Go %s installed successfully!\n", version)
 }
 
-// buildDownloadURL Builds download url
-func buildDownloadURL(version, osType, arch string) string {
-	baseURL := "https://dl.google.com/go/go%s.%s-%s.%s"
-
+// buildDownloadFileName Builds download file name
+func buildDownloadFileName(version, osType, arch string) string {
 	var osSuffix, archSuffix, extension string
 
 	switch osType {
@@ -101,5 +100,15 @@ func buildDownloadURL(version, osType, arch string) string {
 		return ""
 	}
 
-	return fmt.Sprintf(baseURL, version, osSuffix, archSuffix, extension)
+	return fmt.Sprintf("go%s.%s-%s.%s", version, osSuffix, archSuffix, extension)
+}
+
+// buildDownloadURL Builds download url
+func buildDownloadURL(version, osType, arch string) string {
+	baseURL := "https://mirrors.aliyun.com/golang/%s"
+	downloadFileName := buildDownloadFileName(version, osType, arch)
+	if downloadFileName == "" {
+		return ""
+	}
+	return fmt.Sprintf(baseURL, downloadFileName)
 }

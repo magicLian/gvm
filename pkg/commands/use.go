@@ -24,32 +24,24 @@ func Use(version string) {
 	}
 
 	// Create or update current version link.
-	currentLink := filepath.Join(gvmRoot, "current")
+	currentDir := filepath.Join(gvmRoot, "current")
 
 	// Delete old link (if exists).
-	if _, err := os.Lstat(currentLink); err == nil {
-		err = os.Remove(currentLink)
-		if err != nil {
+	if _, err := os.Lstat(currentDir); err == nil {
+		if err = os.Remove(currentDir); err != nil {
 			fmt.Printf("Failed to remove old link: %v\n", err)
 			return
 		}
 	}
 
 	// Create new link.
-	err := createSymlink(goVersionDir, currentLink)
-	if err != nil {
+	goVersionBinDir := filepath.Join(goVersionDir, "go", "bin")
+	if err := createSymlink(goVersionBinDir, currentDir); err != nil {
 		fmt.Printf("Failed to create new link: %v\n", err)
 		return
 	}
 
-	// Update default version in config file.
-	if len(os.Args) > 3 && os.Args[3] == "--default" {
-		config.SetDefaultVersion(version)
-		fmt.Printf("Go %s is now set as default version.\n", version)
-	}
-
 	fmt.Printf("Go %s is now set as current version.\n", version)
-	fmt.Println("Please restart your terminal or run 'source ~/.bashrc' (depending on your shell type) to apply the changes.")
 }
 
 // createSymlink Create link to the specified target.

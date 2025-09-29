@@ -1,50 +1,76 @@
-# GVM - Go 版本管理器
+# GVM - Go Version Manager
 
-GVM 是一个用于管理多个 Go 版本的工具。 它支持 Windows、Linux 和 macOS 系统。
+GVM is a tool for managing multiple Go versions. It supports Windows, Linux, and macOS systems.
 
-## 功能特点
+## Features
 
-- 安装多个 Go 版本
-- 切换当前使用的 Go 版本
-- 列出已安装的 Go 版本
-- 卸载不需要的 Go 版本
+- Install multiple Go versions
+- Switch between different Go versions
+- List installed Go versions
+- Uninstall unnecessary Go versions
 
-## 安装方法
-下载对应系统的gvm可执行文件，并放置于环境变量中。
+## Installation
 
-## 使用方法
+Download the appropriate gvm executable for your system and place it in your environment's PATH.
 
 ```bash
-# 安装指定版本的 Go
+# Install a specific Go version
 gvm install 1.24.0
 
-# 切换到指定版本的 Go
+# Switch to a specific Go version
 gvm use 1.24.0
 
-# 列出已安装的 Go 版本
+# List installed Go versions
 gvm list
 
-# 列出可安装的 Go 版本
-gvm list-all
-
-# 卸载指定版本的 Go
+# Uninstall a specific Go version
 gvm uninstall 1.24.0
 
-# 显示帮助信息
+# Display help information
 gvm help
 ```
 
-## 编译项目
+## Compile the Project
 
 ```bash
 go build -o gvm main.go
 ```
 
-## 核心目录功能
+## Core Directory Functionality
 
-- `$GVM_ROOT`：GVM 工具的使用目录。
-- `$GVM_ROOT/versions`：Go 版本的安装目录，每个版本的 Go 都在一个独立的子目录中。
-- `$GVM_ROOT/archives`: Go 版本的压缩包文件。
-- `$GVM_ROOT/current`: Go 当前可执行文件目录。
+- `$GVM_ROOT`：GVM working directory.
+- `$GVM_ROOT/versions`：Go version installation directory. Each version of Go is installed in a separate subdirectory.
+- `$GVM_ROOT/archives`: Go version archive files.
+- `$GVM_ROOT/current`: Go current executable directory.
 
-current目录为软链接，指向versions中当前使用的Go版本的可执行文件目录。
+current directory is a symbolic link pointing to the executable directory of the currently used Go version in the versions directory.
+
+## Env Variables
+
+- `GVM_ROOT`: GVM working directory.
+
+## Configuration
+
+### Linux & MacOS
+
+Add the source lines from the snippet below to the correct profile file (~/.bashrc, ~/.bash_profile, ~/.zshrc, or ~/.profile):
+
+```bash
+export GVM_ROOT="$HOME/.gvm" 
+export PATH=$PATH:$GVM_ROOT/current
+```
+
+### Windows
+
+Add the following lines to your environment variables:
+
+- `GVM_ROOT`: Add the GVM working directory to the environment variables. (default: `%APPDATA%\gvm`)
+- `PATH`: Add `%GVM_ROOT%\current` to the PATH variable.
+
+## Contributing
+
+Contributions are welcome! Please submit a pull request or open an issue to discuss any changes.
+
+## License
+
+MIT License
