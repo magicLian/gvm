@@ -8,14 +8,14 @@ import (
 	"strings"
 )
 
-// GetGvmRoot 获取 GVM 根目录
+// GetGvmRoot Get GVM root directory.
 func GetGvmRoot() string {
 	var gvmRoot string
 
-	// 从环境变量获取 GVM 根目录
+	// Find GVM root directory from environment variable.
 	gvmRoot = os.Getenv("GVM_ROOT")
 	if gvmRoot == "" {
-		// 如果环境变量不存在，根据操作系统确定 GVM 根目录
+		// If environment variable not found, determine GVM root directory based on operating system.
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
 			fmt.Printf("Get user home directory failed: %v\n", err)
@@ -24,21 +24,21 @@ func GetGvmRoot() string {
 
 		switch runtime.GOOS {
 		case "windows":
-			// Windows 上使用 APPDATA 环境变量
+			// Windows use APPDATA environment variable.
 			appData := os.Getenv("APPDATA")
 			if appData != "" {
 				gvmRoot = filepath.Join(appData, "gvm")
 			} else {
-				// 如果 APPDATA 不存在，使用用户主目录
+				// If APPDATA not found, use user home directory.
 				gvmRoot = filepath.Join(homeDir, "gvm")
 			}
 		default:
-			// Unix-like 系统上使用 .gvm 目录
+			// Unix-like systems use .gvm directory.
 			gvmRoot = filepath.Join(homeDir, ".gvm")
 		}
 	}
 
-	// 确保 GVM 根目录存在
+	// Ensure GVM root directory exists.
 	if err := os.MkdirAll(gvmRoot, 0755); err != nil {
 		fmt.Printf("Create gvm root directory failed: %v\n", err)
 		os.Exit(1)
@@ -46,34 +46,35 @@ func GetGvmRoot() string {
 	return gvmRoot
 }
 
-// SetDefaultVersion 设置默认的 Go 版本
+// SetDefaultVersion Set default Go version.
 func SetDefaultVersion(version string) {
 	gvmRoot := GetGvmRoot()
 	configFile := filepath.Join(gvmRoot, "config")
 
-	// 写入默认版本到配置文件
+	// Write default version to config file.
 	err := os.WriteFile(configFile, []byte(fmt.Sprintf("default=%s\n", version)), 0644)
 	if err != nil {
 		fmt.Printf("Write config file failed: %v\n", err)
 	}
 }
 
-// GetDefaultVersion 获取默认的 Go 版本
+// GetDefaultVersion Get default Go version.
 func GetDefaultVersion() string {
 	gvmRoot := GetGvmRoot()
 	configFile := filepath.Join(gvmRoot, "config")
 
-	// 读取配置文件
+	// Read config file.
 	content, err := os.ReadFile(configFile)
 	if err != nil {
 		return ""
 	}
 
-	// 解析配置文件，查找默认版本
-	// 简单实现，实际可能需要更复杂的解析
+	// Parse config file, find default version.
+	// Simple implementation, actual may need more complex parsing.
 	lines := strings.Split(string(content), "\n")
 	for _, line := range lines {
 		if strings.HasPrefix(line, "default=") {
+			// Trim prefix "default=" and return default version.
 			return strings.TrimPrefix(line, "default=")
 		}
 	}

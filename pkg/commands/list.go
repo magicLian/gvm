@@ -8,70 +8,70 @@ import (
 	"sort"
 )
 
-// ListInstalled 列出所有已安装的 Go 版本
+// ListInstalled Lists all installed Go versions.
 func ListInstalled() {
-	fmt.Println("已安装的 Go 版本:")
-	
-	// 获取 GVM 根目录
+	fmt.Println("Installed Go versions:")
+
+	// Get GVM root directory.
 	gvmRoot := config.GetGvmRoot()
 	versionsDir := filepath.Join(gvmRoot, "versions")
-	
-	// 读取 versions 目录
+
+	// Read versions directory.
 	dirs, err := os.ReadDir(versionsDir)
 	if err != nil {
 		if os.IsNotExist(err) {
-			fmt.Println("  尚未安装任何 Go 版本")
+			fmt.Println("  No Go versions installed yet.")
 		} else {
-			fmt.Printf("读取版本目录失败: %v\n", err)
+			fmt.Printf("Failed to read versions directory: %v\n", err)
 		}
 		return
 	}
-	
-	// 收集版本列表
+
+	// Collect version list.
 	var versions []string
 	for _, dir := range dirs {
 		if dir.IsDir() {
 			versions = append(versions, dir.Name())
 		}
 	}
-	
-	// 排序版本
+
+	// Sort versions.
 	sort.Strings(versions)
-	
-	// 显示当前使用的版本
+
+	// Show current version.
 	currentVersion := GetCurrentVersion()
-	
-	// 输出版本列表
+
+	// Output version list.
 	for _, version := range versions {
 		if version == currentVersion {
-			fmt.Printf("  => %s (当前使用)\n", version)
+			fmt.Printf("  => %s (current)\n", version)
 		} else {
 			fmt.Printf("    %s\n", version)
 		}
 	}
 }
 
-// GetCurrentVersion 获取当前使用的 Go 版本
+// GetCurrentVersion Get current version
 func GetCurrentVersion() string {
 	gvmRoot := config.GetGvmRoot()
 	currentLink := filepath.Join(gvmRoot, "current")
-	
-	// 检查当前链接是否存在
+
+	// Check if current link exists.
 	target, err := os.Readlink(currentLink)
 	if err != nil {
 		return ""
 	}
-	
-	// 从路径中提取版本号
+
+	// Extract version number from path.
 	return filepath.Base(target)
 }
 
-// ShowCurrent 显示当前使用的 Go 版本
+// ShowCurrent Show current version.
 func ShowCurrent() {
 	currentVersion := GetCurrentVersion()
 	if currentVersion != "" {
-		fmt.Printf("当前使用的 Go 版本: %s\n", currentVersion)
+		fmt.Printf("Current Go version: %s\n", currentVersion)
 	} else {
-		fmt.Println("当前没有选择 Go 版本，请使用 'gvm use <version>' 切换版本")
+		fmt.Println("No Go version is currently selected. Please use 'gvm use <version>' to select a version.")
 	}
 }

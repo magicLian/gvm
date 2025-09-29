@@ -7,28 +7,31 @@ import (
 	"os"
 )
 
-// DownloadFile 从指定 URL 下载文件
+// DownloadFile Download file from specified URL.
 func DownloadFile(url, filepath string) error {
-	// 创建文件
+	// Create file.
 	out, err := os.Create(filepath)
 	if err != nil {
-		return err
+		return fmt.Errorf("create file failed: %v", err)
 	}
 	defer out.Close()
 
-	// 发送 HTTP 请求
+	// Send HTTP request.
 	resp, err := http.Get(url)
 	if err != nil {
-		return err
+		return fmt.Errorf("send HTTP request failed: %v", err)
 	}
 	defer resp.Body.Close()
 
-	// 检查响应状态
+	// Check response status.
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("下载失败: 状态码 %d", resp.StatusCode)
+		return fmt.Errorf("download failed: Status code %d", resp.StatusCode)
 	}
 
-	// 将响应内容写入文件
+	// Write response content to file.
 	_, err = io.Copy(out, resp.Body)
-	return err
+	if err != nil {
+		return fmt.Errorf("write response content to file failed: %v", err)
+	}
+	return nil
 }

@@ -7,34 +7,34 @@ import (
 	"path/filepath"
 )
 
-// Uninstall 卸载指定版本的 Go
+// Uninstall Uninstall specified Go version.
 func Uninstall(version string) {
 	fmt.Printf("正在卸载 Go %s...\n", version)
 	
-	// 获取 GVM 根目录
+	// Get GVM root directory.
 	gvmRoot := config.GetGvmRoot()
 	goVersionDir := filepath.Join(gvmRoot, "versions", version)
 	
-	// 检查版本是否已安装
+	// Check if version is installed.
 	if _, err := os.Stat(goVersionDir); os.IsNotExist(err) {
-		fmt.Printf("Go %s 尚未安装\n", version)
+		fmt.Printf("Go %s is not installed.\n", version)
 		return
 	}
 	
-	// 检查是否正在使用该版本
+	// Check if version is currently used.
 	currentVersion := GetCurrentVersion()
 	if currentVersion == version {
-		fmt.Printf("无法卸载正在使用的版本: %s\n", version)
-		fmt.Println("请先使用 'gvm use' 切换到其他版本")
+		fmt.Printf("Cannot uninstall the currently used version: %s\n", version)
+		fmt.Println("Please switch to another version first using 'gvm use'.")
 		return
 	}
 	
-	// 删除版本目录
+	// Remove version directory.
 	err := os.RemoveAll(goVersionDir)
 	if err != nil {
-		fmt.Printf("卸载失败: %v\n", err)
+		fmt.Printf("Uninstallation failed: %v\n", err)
 		return
 	}
 	
-	fmt.Printf("Go %s 卸载成功!\n", version)
+	fmt.Printf("Go %s uninstalled successfully!\n", version)
 }

@@ -11,15 +11,15 @@ import (
 	"strings"
 )
 
-// Unzip 解压文件，支持 zip 和 tar.gz 格式
+// Unzip 解压文件，支持 zip 和 tar.gz 格式  
 func Unzip(source, destination string) error {
-	// 检查文件扩展名
+	// Check file extension.
 	if strings.HasSuffix(source, ".zip") {
 		return unzipFile(source, destination)
 	} else if strings.HasSuffix(source, ".tar.gz") || strings.HasSuffix(source, ".tgz") {
 		return untarFile(source, destination)
 	} else {
-		return fmt.Errorf("不支持的文件格式: %s", source)
+		return fmt.Errorf("unsupported file format: %s", source)
 	}
 }
 
