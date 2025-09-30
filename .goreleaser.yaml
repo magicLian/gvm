@@ -22,8 +22,9 @@ release:
   prerelease: false
 
 archives:
-  - format: tar.gz
+  - id: my-archive
     name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    formats: ["zip", "tar.gz"] # Plural form, multiple formats. Since: v2.6
     files:
       - LICENSE
       - README.md
