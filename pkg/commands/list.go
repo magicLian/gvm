@@ -30,6 +30,43 @@ func ListInstalled() {
 	}
 
 	// Collect version list.
+	versions := GetInstalledVersions()
+	// Show current version.
+	currentVersion := GetCurrentVersion()
+
+	fmt.Println("Installed Go versions:")
+	fmt.Println("")
+
+	// Output version list.
+	for _, version := range versions {
+		if version == currentVersion {
+			fmt.Printf("  => %s (current) ✅ \n", version)
+		} else {
+			fmt.Printf("    %s\n", version)
+		}
+	}
+}
+
+func GetInstalledVersions() []string {
+	// Get GVM root directory.
+	gvmRoot := config.GetGvmRoot()
+	versionsDir := filepath.Join(gvmRoot, "versions")
+
+	// Read versions directory.
+	dirs, err := os.ReadDir(versionsDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return []string{}
+		} else {
+			fmt.Printf("Failed to read versions directory: %v\n", err)
+			return []string{}
+		}
+	}
+	if len(dirs) == 0 {
+		return []string{}
+	}
+
+	// Collect version list.
 	var versions []string
 	for _, dir := range dirs {
 		if dir.IsDir() {
@@ -40,19 +77,7 @@ func ListInstalled() {
 	// Sort versions.
 	sort.Sort(sort.Reverse(sort.StringSlice(versions)))
 
-	// Show current version.
-	currentVersion := GetCurrentVersion()
-
-	fmt.Println("Installed Go versions:")
-
-	// Output version list.
-	for _, version := range versions {
-		if version == currentVersion {
-			fmt.Printf("  => %s (current) ✅ \n", version)
-		} else {
-			fmt.Printf("    %s\n", version)
-		}
-	}
+	return versions
 }
 
 // GetCurrentVersion Get current version

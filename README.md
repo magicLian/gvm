@@ -7,6 +7,7 @@ GVM is a tool for managing multiple Go versions. It supports Windows, Linux, and
 - Install multiple Go versions
 - Switch between different Go versions
 - List installed Go versions
+- List remote available Go versions
 - Uninstall unnecessary Go versions
 
 ## Installation
@@ -24,7 +25,10 @@ gvm install 1.24.0
 gvm use 1.24.0
 
 # List installed Go versions
-gvm list
+gvm ls
+
+# List remote available Go versions
+gvm ls-remote
 
 # Uninstall a specific Go version
 gvm uninstall 1.24.0

@@ -31,6 +31,8 @@ func main() {
 		commands.Use(version)
 	case "ls":
 		commands.ListInstalled()
+	case "ls-remote":
+		commands.ListRemote()
 	case "uninstall":
 		if len(os.Args) < 3 {
 			fmt.Println("The Go version is required, for example: gvm uninstall 1.25.1")
@@ -53,7 +55,8 @@ func help() {
 	fmt.Println("\nUsage:")
 	fmt.Println("  gvm install <version>    Install the specified Go version")
 	fmt.Println("  gvm use <version>        Switch to the specified Go version")
-	fmt.Println("  gvm ls                 	List installed Go versions")
+	fmt.Println("  gvm ls                   List installed Go versions")
+	fmt.Println("  gvm ls-remote            List remote available Go versions")
 	fmt.Println("  gvm uninstall <version>  Uninstall the specified Go version")
 	fmt.Println("  gvm --help               Show the help message")
 }
