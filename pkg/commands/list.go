@@ -14,11 +14,6 @@ func ListInstalled() {
 	gvmRoot := config.GetGvmRoot()
 	versionsDir := filepath.Join(gvmRoot, "versions")
 
-	if err := os.MkdirAll(versionsDir, 0755); err != nil {
-		fmt.Printf("Create versions directory failed: %v\n", err)
-		return
-	}
-
 	// Read versions directory.
 	dirs, err := os.ReadDir(versionsDir)
 	if err != nil {
@@ -43,7 +38,7 @@ func ListInstalled() {
 	}
 
 	// Sort versions.
-	sort.Strings(versions)
+	sort.Sort(sort.Reverse(sort.StringSlice(versions)))
 
 	// Show current version.
 	currentVersion := GetCurrentVersion()
@@ -53,7 +48,7 @@ func ListInstalled() {
 	// Output version list.
 	for _, version := range versions {
 		if version == currentVersion {
-			fmt.Printf("  => %s (current)\n", version)
+			fmt.Printf("  => %s (current) ✅ \n", version)
 		} else {
 			fmt.Printf("    %s\n", version)
 		}
@@ -71,8 +66,10 @@ func GetCurrentVersion() string {
 		return ""
 	}
 
-	// Extract version number from path.
-	return filepath.Base(target)
+	// current -> /opt/go/versions/1.25.1/go
+	// filepath.Dir(target) -> /opt/go/versions/1.25.1
+	// filepath.Base(filepath.Dir(target)) -> "1.25.1"
+	return filepath.Base(filepath.Dir(target))
 }
 
 // ShowCurrent Show current version.

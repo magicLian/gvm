@@ -60,7 +60,7 @@ Add the source lines from the snippet below to the correct profile file (~/.bash
 
 ```bash
 export GVM_ROOT="$HOME/.gvm" 
-export PATH=$PATH:$GVM_ROOT/current
+export PATH=$PATH:$GVM_ROOT/current/bin
 ```
 
 ### Windows
@@ -68,7 +68,7 @@ export PATH=$PATH:$GVM_ROOT/current
 Add the following lines to your environment variables:
 
 - `GVM_ROOT`: Add the GVM working directory to the environment variables. (default: `%APPDATA%\gvm`)
-- `PATH`: Add `%GVM_ROOT%\current` to the PATH variable.
+- `PATH`: Add `%GVM_ROOT%\current\bin` to the PATH variable.
 
 ## Contributing
 

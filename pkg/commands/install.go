@@ -64,8 +64,8 @@ func Install(version string) {
 		fmt.Printf("Remove current symlink failed: %v\n", err)
 		return
 	}
-	goVersionBinDir := filepath.Join(goVersionDir, "go", "bin")
-	if err := os.Symlink(goVersionBinDir, goCurrentDir); err != nil {
+	goVersionGODir := filepath.Join(goVersionDir, "go")
+	if err := os.Symlink(goVersionGODir, goCurrentDir); err != nil {
 		fmt.Printf("Create current symlink failed: %v\n", err)
 		return
 	}

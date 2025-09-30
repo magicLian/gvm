@@ -35,8 +35,8 @@ func Use(version string) {
 	}
 
 	// Create new link.
-	goVersionBinDir := filepath.Join(goVersionDir, "go", "bin")
-	if err := createSymlink(goVersionBinDir, currentDir); err != nil {
+	goVersionGODir := filepath.Join(goVersionDir, "go")
+	if err := createSymlink(goVersionGODir, currentDir); err != nil {
 		fmt.Printf("Failed to create new link: %v\n", err)
 		return
 	}
