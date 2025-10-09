@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"gvm/pkg/commands"
+	"gvm/pkg/utils"
 	"os"
 )
 
@@ -23,11 +24,27 @@ func main() {
 		version := os.Args[2]
 		commands.Install(version)
 	case "use":
-		if len(os.Args) < 3 {
-			fmt.Println("The Go version is required, for example: gvm use 1.25.1")
-			os.Exit(1)
+		version := ""
+		if len(os.Args) == 3 {
+			version = os.Args[2]
 		}
-		version := os.Args[2]
+
+		if version == "" {
+			versions := commands.GetInstalledVersions()
+			if len(versions) == 0 {
+				fmt.Printf("no installed versions found\n")
+				os.Exit(1)
+			}
+			currentVersion := commands.GetCurrentVersion()
+
+			selected, err := utils.FuzzySelect(versions, currentVersion)
+			if err != nil {
+				fmt.Printf("Failed to select version: %v\n", err)
+				os.Exit(1)
+			}
+			version = selected
+		}
+
 		commands.Use(version)
 	case "ls":
 		commands.ListInstalled()
